@@ -60,10 +60,10 @@ private static Node root;
 	}
 	
 	//Count the number of spaces in the path
-	public int countPathLength( String path )
+/* 	public int countPathLength( String path )
 	{
 		return path.length() - path.replaceAll(" ", "").length();
-	}
+	} */
 		
 	public class Node
 	{
@@ -123,10 +123,9 @@ private static Node root;
 		routes = args[0];
 		address = args[1];
 		
-		Node bestNode;
-		bestNode = new x.Node();
+		Node bestNode = new Node();
 		
-		/* Take routes file as input and parse it and then do stuff */
+		/* Initialize the trie */
 		try(BufferedReader br = new BufferedReader( new FileReader(routes)))
 		{
 			String prefix, nextHop, prefix2, nextHop2;
@@ -172,12 +171,49 @@ private static Node root;
 			//current node used to go through tree while searching for empty node
 			Node currNode = root;
 			
-			//Go through bit string of ipAddr
+			//Go through bit string of ipAddr and find next open node
 			for(int i = 0; i <= ipAddr.length(); i++)
 			{
 				if( currNode.children[ ipArray[i]] == null)
 				{
 					currNode.children[ ipArray[i] ] = bestNode;
+					System.out.println(currNode.getPrefix());
+					break;
+				}
+				else
+				{
+					currNode = currNode.children[ipArray[i]];
+				}
+			}
+		}
+		
+		System.out.println("\nLongest Prefix Match");
+		System.out.println("\n\n");
+		
+		/* Longest Prefix Match  */
+		try(BufferedReader bre = new BufferedReader( new FileReader(address)))
+		{
+			String ipAddr;
+			//Read line by line
+			for(String line; (line = bre.readLine()) != null; )
+			{
+				ipAddr = ipToBitString(line);
+				char[] ipArray = ipAddr.toCharArray();
+				
+				Node currNode = root;
+				
+				for(int i = 0; i <= ipAddr.length(); i++)
+				{
+					if( currNode.children[ ipArray[i] ] == null)
+					{
+						System.out.println(ipAddr + "	" + currNode.getPrefix());
+						break;
+					}
+					else
+					{
+						currNode = currNode.children[ ipArray[i] ]; 
+					}
+					//Say No Match somehow
 				}
 			}
 		}
